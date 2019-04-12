@@ -14,7 +14,7 @@
 | **s1_table_generate.py** | Generates table of top 10 GO-terms |
 | **samtools_stats_multiple.bash** | samtools flagstat/idxstats/stats and plot-bamstats multiple assemblies |
 | **STAR_multiple.bash** | Map multiple RNA-seq samples with STAR |
-| **top_10_DEGs.py** | Generates tables of the top 10 up- and down-regulated genes for each comparison |
+| **top_10_DEGs.py** | Generates tables of the top 10 up- and down-regulated DEGs for each comparison |
 | **trimmomatic_multiple.bash** | Trim multiple fastqc.gz files |
 | **UniprotIdRetrieval.py** | Downloads protein sequences from Uniprot (adapted from UniprotIdRetrieval) |
 | **venn.py** | Generates venn diagrams for total expressed, up- and down-regulated genes |
