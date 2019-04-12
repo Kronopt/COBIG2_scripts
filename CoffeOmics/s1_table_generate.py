@@ -84,7 +84,7 @@ if __name__ == '__main__':
                                       if gene_name in seqtable_go_count[seqtable_name]['up']]
 
                         row = []
-                        row.append(go_term[2:])     # GO-terms (top 10)
+                        row.append(go_term[2:]) # GO-terms (top 10)
                         row.append(str(         # # genes
                                    len(gene_set)))
                         row.append(str(         # % total genes anotados

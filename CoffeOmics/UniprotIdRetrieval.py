@@ -2,7 +2,7 @@
 # coding: utf-8
 
 """
-UNIPROT ID RETRIEVAL (adapted from UniprotIdRetrieval
+UNIPROT ID RETRIEVAL (adapted from UniprotIdRetrieval)
 Downloads protein sequences from Uniprot, in the desired output format, based on the given ids (either passed as
 arguments or identified in a file)
 
