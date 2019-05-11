@@ -31,7 +31,7 @@ if __name__ == '__main__':
                 de_file_reader = csv.reader(de_file)
                 next(de_file_reader)  # ignore header
                 for row in de_file_reader:
-                    if float(row[6]) < 0.05:  # FDR p-adjusted
+                    if row[6] != 'NA' and float(row[6]) < 0.05:  # FDR p-adjusted
                         if float(row[2]) < 0:  # log2FoldChange < 0
                             de_results_dict[de_results_name]['down'][row[0]] = row[2]
                         elif float(row[2]) > 0:  # log2FoldChange > 0

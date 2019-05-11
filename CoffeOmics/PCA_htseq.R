@@ -1,9 +1,12 @@
+#!/usr/bin/env Rscript
+
 # http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/118-principal-component-analysis-in-r-prcomp-vs-princomp/
 
+# install.packages('factoextra')
 library(factoextra)
 
 
-htseq_counts_folder <- "C:/Users/Pedro/Desktop/htseq_counts"
+htseq_counts_folder <- getwd()
 
 
 ###
@@ -35,18 +38,20 @@ dataset <- dataset[-seq(nrow(dataset) - 4, nrow(dataset)),]
 dataset <- t(dataset)
 
 # change row names
-rownames(dataset) <- c("1A", "1B", "1C", "3A", "3B", "3C", "5A", "5B", "5C", "7A", "7B", "7C")
+rownames(dataset) <- c("1A", "1B", "3A", "3B", "3C", "5A", "5B", "5C", "7A", "7B", "7C")
 
 
 ###
 # pca
 ###
 
+png("PCA_htseq_counts.png")
+
 pca <- prcomp(dataset)
 pca_graphic <- fviz_pca_ind(pca,
              invisible=c("quali"),
-             col.ind=c("#00AFBB","#00AFBB","#00AFBB", "#00BB22","#00BB22","#00BB22", "#BBBB00","#BBBB00","#BBBB00", "#BB3000","#BB3000","#BB3000"),
+             col.ind=c("#00AFBB","#00AFBB", "#00BB22","#00BB22","#00BB22", "#BBBB00","#BBBB00","#BBBB00", "#BB3000","#BB3000","#BB3000"),
              repel=TRUE)
+pca_graphic + theme(legend.position="none")
 
-pca_graphic + 
-  theme(legend.position="none")
+dev.off()

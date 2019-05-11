@@ -12,7 +12,7 @@
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
 	echo "Must be run inside the folder containing the blast2go_cli.run executable"
 	echo
-        echo "2 arguments needed:"
+        echo "3 arguments needed:"
         echo "1 - Folder containing FASTA files"
         echo "2 - Output folder"
         echo "3 - Temporary blastXML folder (must be defined in the blast2go properties file as well"

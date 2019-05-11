@@ -2,9 +2,10 @@
 
 |  |  |
 |---------|--------------|
-| **all_blast2go.bash** | Runs Blast2GO for every FASTA file in a folder (recursively) | 
+| **all_blast2go.bash** | Runs Blast2GO for every FASTA file in a folder (recursively) |
 | **bai_create.bash** | Creates bai index files for each mapped .bam file
 | **build_fasta_from_gene_names.py** | Builds 2 FASTA files (up-regulated and down-regulated genes) with sequences that correspond to genes present in the output of DESEQ2 analysis |
+| **descendant_goterms.py** | Identify descendant GO terms and verify which genes are annotated with those descendants. |
 | **DESeq2_multiple.r** | Performs Differential Expression analysis with DESeq2 |
 | **fastqc_multiple.bash** | Runs FastQC on sample 'fastq.gz', on 'T' number of threads |
 | **gff_extract_all_swissprotids.py** | Extracts SwissProt IDs of each gene from a gff3 functional annotation file |

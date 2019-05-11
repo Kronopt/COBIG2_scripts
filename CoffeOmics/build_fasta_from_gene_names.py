@@ -98,7 +98,7 @@ class FastaParser:
 
 
 def main(input_csv, input_genome, output_file_up, output_file_down):
-    input_csv_reader = csv.reader(input_csv, quoting=csv.QUOTE_NONNUMERIC)
+    input_csv_reader = csv.reader(input_csv)
 
     # ignore header on csv input
     next(input_csv_reader)
@@ -109,7 +109,7 @@ def main(input_csv, input_genome, output_file_up, output_file_down):
     gene_name_position = {}
     count = 0
     for line in input_csv_reader:
-        if float(line[6]) < 0.05:
+        if 'NA'not in line[6] and float(line[6]) < 0.05:
             input_csv_filtered_rows.append(line)
             gene_name_position[line[0]] = count
             count += 1
@@ -120,10 +120,10 @@ def main(input_csv, input_genome, output_file_up, output_file_down):
         fasta_sequence = input_genome.sequences[gene_name]
 
         # up- vs down- regulated (log2FoldChange)
-        if line[2] > 0:
+        if float(line[2]) > 0:
             output_file_up.write('>' + fasta_sequence.id + ' ' + fasta_sequence.description + '\n')
             output_file_up.write(fasta_sequence.sequence + '\n')
-        elif line[2] < 0:
+        elif float(line[2]) < 0:
             output_file_down.write('>' + fasta_sequence.id + ' ' + fasta_sequence.description + '\n')
             output_file_down.write(fasta_sequence.sequence + '\n')
 

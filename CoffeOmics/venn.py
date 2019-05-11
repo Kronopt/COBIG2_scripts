@@ -290,7 +290,7 @@ if __name__ == '__main__':
                 de_file_reader = csv.reader(de_file)
                 next(de_file_reader)  # ignore header
                 for row in de_file_reader:
-                    if float(row[6]) < 0.05:  # FDR p-adjusted
+                    if row[6] != 'NA' and float(row[6]) < 0.05:  # FDR p-adjusted
                         if float(row[2]) < 0:  # log2FoldChange < 0
                             de_results_set_dict[de_results_name]['down'].add(row[0])
                         elif float(row[2]) > 0:  # log2FoldChange > 0
@@ -321,231 +321,231 @@ if __name__ == '__main__':
 
         print('Generating venn diagrams ... ', end='')
 
-        # c.canephora genome VS all expressed genes:
-        # all htseq-counts (count > 0)
-        create_venn([genome_set,
-                     set.union(*[htseq_set for htseq_set in htseq_counts_set_dict.values()])],
-                    ['c.canephora genome', 'all expressed genes'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora genome VS all expressed genes:
+        # # all htseq-counts (count > 0)
+        # create_venn([genome_set,
+                     # set.union(*[htseq_set for htseq_set in htseq_counts_set_dict.values()])],
+                    # ['c.canephora genome', 'all expressed genes'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # c.canephora genome VS C380:
-        # htseq_counts 1, 2, 5, 6, 9, 11 (count > 0)
-        create_venn([genome_set,
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 2, 5, 6, 9, 11]])],
-                    ['c.canephora genome', 'C380'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora genome VS C380:
+        # # htseq_counts 1, 2, 5, 6, 9, 11 (count > 0)
+        # create_venn([genome_set,
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 2, 5, 6, 9, 11]])],
+                    # ['c.canephora genome', 'C380'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # c.canephora genome VS C700:
-        # htseq_counts 3, 4, 7, 8, 10, 12 (count > 0)
-        create_venn([genome_set,
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3, 4, 7, 8, 10, 12]])],
-                    ['c.canephora genome', 'C700'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora genome VS C700:
+        # # htseq_counts 3, 4, 7, 8, 10, 12 (count > 0)
+        # create_venn([genome_set,
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3, 4, 7, 8, 10, 12]])],
+                    # ['c.canephora genome', 'C700'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # c.canephora genome VS C380 VS C700:
-        # htseq_counts 1, 2, 5, 6, 9, 11 (count > 0)
-        # htseq_counts 3, 4, 7, 8, 10, 12 (count > 0)
-        create_venn([genome_set,
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 2, 5, 6, 9, 11]]),
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3, 4, 7, 8, 10, 12]])],
-                    ['c.canephora genome', 'C380', 'C700'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora genome VS C380 VS C700:
+        # # htseq_counts 1, 2, 5, 6, 9, 11 (count > 0)
+        # # htseq_counts 3, 4, 7, 8, 10, 12 (count > 0)
+        # create_venn([genome_set,
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 2, 5, 6, 9, 11]]),
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3, 4, 7, 8, 10, 12]])],
+                    # ['c.canephora genome', 'C380', 'C700'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # C380 VS C700:
-        # htseq_counts 1, 2, 5, 6, 9, 11 (count > 0)
-        # htseq_counts 3, 4, 7, 8, 10, 12 (count > 0)
-        create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 2, 5, 6, 9, 11]]),
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3, 4, 7, 8, 10, 12]])],
-                    ['C380', 'C700'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # C380 VS C700:
+        # # htseq_counts 1, 2, 5, 6, 9, 11 (count > 0)
+        # # htseq_counts 3, 4, 7, 8, 10, 12 (count > 0)
+        # create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 2, 5, 6, 9, 11]]),
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3, 4, 7, 8, 10, 12]])],
+                    # ['C380', 'C700'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # c.canephora genome VS 25C:
-        # htseq_counts 1, 3, 5, 7 (count > 0)
-        create_venn([genome_set,
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 3, 5, 7]])],
-                    ['c.canephora genome', '25C'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora genome VS 25C:
+        # # htseq_counts 1, 3, 5, 7 (count > 0)
+        # create_venn([genome_set,
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 3, 5, 7]])],
+                    # ['c.canephora genome', '25C'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # c.canephora genome VS HiC:
-        # htseq_counts 2, 4, 6, 8 (count > 0)
-        create_venn([genome_set,
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [2, 4, 6, 8]])],
-                    ['c.canephora genome', 'HiC'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora genome VS HiC:
+        # # htseq_counts 2, 4, 6, 8 (count > 0)
+        # create_venn([genome_set,
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [2, 4, 6, 8]])],
+                    # ['c.canephora genome', 'HiC'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # c.canephora genome VS ItC:
-        # htseq_counts 9, 10, 11, 12 (count > 0)
-        create_venn([genome_set,
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [9, 10, 11, 12]])],
-                    ['c.canephora genome', 'ItC'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora genome VS ItC:
+        # # htseq_counts 9, 10, 11, 12 (count > 0)
+        # create_venn([genome_set,
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [9, 10, 11, 12]])],
+                    # ['c.canephora genome', 'ItC'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # 25C VS HiC:
-        # htseq_counts 1, 3, 5, 7 (count > 0)
-        # htseq_counts 2, 4, 6, 8 (count > 0)
-        create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 3, 5, 7]]),
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [2, 4, 6, 8]])],
-                    ['25C', 'HiC'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # 25C VS HiC:
+        # # htseq_counts 1, 3, 5, 7 (count > 0)
+        # # htseq_counts 2, 4, 6, 8 (count > 0)
+        # create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 3, 5, 7]]),
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [2, 4, 6, 8]])],
+                    # ['25C', 'HiC'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # 25C VS ItC:
-        # htseq_counts 1, 3, 5, 7 (count > 0)
-        # htseq_counts 9, 10, 11, 12 (count > 0)
-        create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 3, 5, 7]]),
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [9, 10, 11, 12]])],
-                    ['25C', 'ItC'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # 25C VS ItC:
+        # # htseq_counts 1, 3, 5, 7 (count > 0)
+        # # htseq_counts 9, 10, 11, 12 (count > 0)
+        # create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 3, 5, 7]]),
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [9, 10, 11, 12]])],
+                    # ['25C', 'ItC'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # HiC VS ItC:
-        # htseq_counts 2, 4, 6, 8 (count > 0)
-        # htseq_counts 9, 10, 11, 12 (count > 0)
-        create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [2, 4, 6, 8]]),
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [9, 10, 11, 12]])],
-                    ['HiC', 'ItC'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # HiC VS ItC:
+        # # htseq_counts 2, 4, 6, 8 (count > 0)
+        # # htseq_counts 9, 10, 11, 12 (count > 0)
+        # create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [2, 4, 6, 8]]),
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [9, 10, 11, 12]])],
+                    # ['HiC', 'ItC'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # 25C VS HiC VS ItC:
-        # htseq_counts 1, 3, 5, 7 (count > 0)
-        # htseq_counts 2, 4, 6, 8 (count > 0)
-        # htseq_counts 9, 10, 11, 12 (count > 0)
-        create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 3, 5, 7]]),
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [2, 4, 6, 8]]),
-                    set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [9, 10, 11, 12]])],
-                    ['25C', 'HiC', 'ItC'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # 25C VS HiC VS ItC:
+        # # htseq_counts 1, 3, 5, 7 (count > 0)
+        # # htseq_counts 2, 4, 6, 8 (count > 0)
+        # # htseq_counts 9, 10, 11, 12 (count > 0)
+        # create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 3, 5, 7]]),
+                     # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [2, 4, 6, 8]]),
+                    # set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [9, 10, 11, 12]])],
+                    # ['25C', 'HiC', 'ItC'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # c.canephora genome VS all DE genes:
-        # all results.csv (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        create_venn([genome_set,
-                     set.union(*[de_results['up'].union(de_results['down'])
-                                 for de_results in de_results_set_dict.values()])],
-                    ['c.canephora genome', 'all DE genes'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora genome VS all DE genes:
+        # # all results.csv (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # create_venn([genome_set,
+                     # set.union(*[de_results['up'].union(de_results['down'])
+                                 # for de_results in de_results_set_dict.values()])],
+                    # ['c.canephora genome', 'all DE genes'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        ######
-        # TEMP
-        ######
+        # ######
+        # # TEMP
+        # ######
 
-        # c.canephora DE VS c.arabica DE:
-        # results.csv 5vs6, 5vs11, 6vs11, 7vs8, 7vs12, 8vs12 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 1vs2, 1vs9, 2vs9, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        create_venn([set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '5vs11', '6vs11', '7vs8', '7vs12', '8vs12']]),
-                     set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
-                                 if key in ['1vs2', '1vs9', '2vs9', '3vs4', '3vs10', '4vs10']])],
-                    ['c.canephora DE', 'c.arabica DE'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora DE VS c.arabica DE:
+        # # results.csv 5vs6, 5vs11, 6vs11, 7vs8, 7vs12, 8vs12 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 1vs2, 1vs9, 2vs9, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # create_venn([set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '5vs11', '6vs11', '7vs8', '7vs12', '8vs12']]),
+                     # set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
+                                 # if key in ['1vs2', '1vs9', '2vs9', '3vs4', '3vs10', '4vs10']])],
+                    # ['c.canephora DE', 'c.arabica DE'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # c.canephora UP-DE VS c.arabica UP-DE:
-        # results.csv 5vs6, 5vs11, 6vs11, 7vs8, 7vs12, 8vs12 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 1vs2, 1vs9, 2vs9, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        create_venn([set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '5vs11', '6vs11', '7vs8', '7vs12', '8vs12']]),
-                     set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['1vs2', '1vs9', '2vs9', '3vs4', '3vs10', '4vs10']])],
-                    ['c.canephora up-DE', 'c.arabica up-DE'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora UP-DE VS c.arabica UP-DE:
+        # # results.csv 5vs6, 5vs11, 6vs11, 7vs8, 7vs12, 8vs12 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 1vs2, 1vs9, 2vs9, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # create_venn([set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '5vs11', '6vs11', '7vs8', '7vs12', '8vs12']]),
+                     # set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['1vs2', '1vs9', '2vs9', '3vs4', '3vs10', '4vs10']])],
+                    # ['c.canephora up-DE', 'c.arabica up-DE'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # c.canephora DOWN-DE VS c.arabica DOWN-DE:
-        # results.csv 5vs6, 5vs11, 6vs11, 7vs8, 7vs12, 8vs12 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 1vs2, 1vs9, 2vs9, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        create_venn([set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '5vs11', '6vs11', '7vs8', '7vs12', '8vs12']]),
-                     set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['1vs2', '1vs9', '2vs9', '3vs4', '3vs10', '4vs10']])],
-                    ['c.canephora down-DE', 'c.arabica down-DE'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # c.canephora DOWN-DE VS c.arabica DOWN-DE:
+        # # results.csv 5vs6, 5vs11, 6vs11, 7vs8, 7vs12, 8vs12 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 1vs2, 1vs9, 2vs9, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # create_venn([set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '5vs11', '6vs11', '7vs8', '7vs12', '8vs12']]),
+                     # set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['1vs2', '1vs9', '2vs9', '3vs4', '3vs10', '4vs10']])],
+                    # ['c.canephora down-DE', 'c.arabica down-DE'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # C380 DE VS C700 DE:
-        # results.csv 5vs6, 5vs11, 6vs11, 1vs2, 1vs9, 2vs9 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 7vs8, 7vs12, 8vs12, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        create_venn([set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '5vs11', '6vs11', '1vs2', '1vs9', '2vs9']]),
-                     set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
-                                 if key in ['7vs8', '7vs12', '8vs12', '3vs4', '3vs10', '4vs10']])],
-                    ['C380 DE', 'C700 DE'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # C380 DE VS C700 DE:
+        # # results.csv 5vs6, 5vs11, 6vs11, 1vs2, 1vs9, 2vs9 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 7vs8, 7vs12, 8vs12, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # create_venn([set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '5vs11', '6vs11', '1vs2', '1vs9', '2vs9']]),
+                     # set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
+                                 # if key in ['7vs8', '7vs12', '8vs12', '3vs4', '3vs10', '4vs10']])],
+                    # ['C380 DE', 'C700 DE'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # C380 UP-DE VS C700 UP-DE:
-        # results.csv 5vs6, 5vs11, 6vs11, 1vs2, 1vs9, 2vs9 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 7vs8, 7vs12, 8vs12, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        create_venn([set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '5vs11', '6vs11', '1vs2', '1vs9', '2vs9']]),
-                     set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['7vs8', '7vs12', '8vs12', '3vs4', '3vs10', '4vs10']])],
-                    ['C380 up-DE', 'C700 up-DE'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # C380 UP-DE VS C700 UP-DE:
+        # # results.csv 5vs6, 5vs11, 6vs11, 1vs2, 1vs9, 2vs9 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 7vs8, 7vs12, 8vs12, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # create_venn([set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '5vs11', '6vs11', '1vs2', '1vs9', '2vs9']]),
+                     # set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['7vs8', '7vs12', '8vs12', '3vs4', '3vs10', '4vs10']])],
+                    # ['C380 up-DE', 'C700 up-DE'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # C380 DOWN-DE VS C700 DOWN-DE:
-        # results.csv 5vs6, 5vs11, 6vs11, 1vs2, 1vs9, 2vs9 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 7vs8, 7vs12, 8vs12, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        create_venn([set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '5vs11', '6vs11', '1vs2', '1vs9', '2vs9']]),
-                     set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['7vs8', '7vs12', '8vs12', '3vs4', '3vs10', '4vs10']])],
-                    ['C380 down-DE', 'C700 down-DE'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # C380 DOWN-DE VS C700 DOWN-DE:
+        # # results.csv 5vs6, 5vs11, 6vs11, 1vs2, 1vs9, 2vs9 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 7vs8, 7vs12, 8vs12, 3vs4, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # create_venn([set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '5vs11', '6vs11', '1vs2', '1vs9', '2vs9']]),
+                     # set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['7vs8', '7vs12', '8vs12', '3vs4', '3vs10', '4vs10']])],
+                    # ['C380 down-DE', 'C700 down-DE'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # 25C DE VS HiC DE VS ItC DE:
-        # results.csv 5vs6, 5vs11, 1vs2, 1vs9, 7vs8, 7vs12, 3vs4, 3vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 5vs6, 6vs11, 1vs2, 2vs9, 7vs8, 8vs12, 3vs4, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 5vs11, 6vs11, 1vs9, 2vs9, 7vs12, 8vs12, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        create_venn([set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '5vs11', '1vs2', '1vs9', '7vs8', '7vs12', '3vs4', '3vs10']]),
-                     set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '6vs11', '1vs2', '2vs9', '7vs8', '8vs12', '3vs4', '4vs10']]),
-                     set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs11', '6vs11', '1vs9', '2vs9', '7vs12', '8vs12', '3vs10', '4vs10']])],
-                    ['25C DE', 'HiC DE', 'ItC DE'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # 25C DE VS HiC DE VS ItC DE:
+        # # results.csv 5vs6, 5vs11, 1vs2, 1vs9, 7vs8, 7vs12, 3vs4, 3vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 5vs6, 6vs11, 1vs2, 2vs9, 7vs8, 8vs12, 3vs4, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 5vs11, 6vs11, 1vs9, 2vs9, 7vs12, 8vs12, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # create_venn([set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '5vs11', '1vs2', '1vs9', '7vs8', '7vs12', '3vs4', '3vs10']]),
+                     # set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '6vs11', '1vs2', '2vs9', '7vs8', '8vs12', '3vs4', '4vs10']]),
+                     # set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs11', '6vs11', '1vs9', '2vs9', '7vs12', '8vs12', '3vs10', '4vs10']])],
+                    # ['25C DE', 'HiC DE', 'ItC DE'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # 25C UP-DE VS HiC UP-DE VS ItC UP-DE:
-        # results.csv 5vs6, 5vs11, 1vs2, 1vs9, 7vs8, 7vs12, 3vs4, 3vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 5vs6, 6vs11, 1vs2, 2vs9, 7vs8, 8vs12, 3vs4, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 5vs11, 6vs11, 1vs9, 2vs9, 7vs12, 8vs12, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        create_venn([set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '5vs11', '1vs2', '1vs9', '7vs8', '7vs12', '3vs4', '3vs10']]),
-                     set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '6vs11', '1vs2', '2vs9', '7vs8', '8vs12', '3vs4', '4vs10']]),
-                     set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs11', '6vs11', '1vs9', '2vs9', '7vs12', '8vs12', '3vs10', '4vs10']])],
-                    ['25C up-DE', 'HiC up-DE', 'ItC up-DE'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # 25C UP-DE VS HiC UP-DE VS ItC UP-DE:
+        # # results.csv 5vs6, 5vs11, 1vs2, 1vs9, 7vs8, 7vs12, 3vs4, 3vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 5vs6, 6vs11, 1vs2, 2vs9, 7vs8, 8vs12, 3vs4, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 5vs11, 6vs11, 1vs9, 2vs9, 7vs12, 8vs12, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # create_venn([set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '5vs11', '1vs2', '1vs9', '7vs8', '7vs12', '3vs4', '3vs10']]),
+                     # set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '6vs11', '1vs2', '2vs9', '7vs8', '8vs12', '3vs4', '4vs10']]),
+                     # set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs11', '6vs11', '1vs9', '2vs9', '7vs12', '8vs12', '3vs10', '4vs10']])],
+                    # ['25C up-DE', 'HiC up-DE', 'ItC up-DE'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
-        # 25C DOWN-DE VS HiC DOWN-DE VS ItC DOWN-DE:
-        # results.csv 5vs6, 5vs11, 1vs2, 1vs9, 7vs8, 7vs12, 3vs4, 3vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 5vs6, 6vs11, 1vs2, 2vs9, 7vs8, 8vs12, 3vs4, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        # results.csv 5vs11, 6vs11, 1vs9, 2vs9, 7vs12, 8vs12, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
-        create_venn([set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '5vs11', '1vs2', '1vs9', '7vs8', '7vs12', '3vs4', '3vs10']]),
-                     set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs6', '6vs11', '1vs2', '2vs9', '7vs8', '8vs12', '3vs4', '4vs10']]),
-                     set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
-                                 if key in ['5vs11', '6vs11', '1vs9', '2vs9', '7vs12', '8vs12', '3vs10', '4vs10']])],
-                    ['25C down-DE', 'HiC down-DE', 'ItC down-DE'],
-                    parser.output_folder,
-                    ['png', 'eps'])
+        # # 25C DOWN-DE VS HiC DOWN-DE VS ItC DOWN-DE:
+        # # results.csv 5vs6, 5vs11, 1vs2, 1vs9, 7vs8, 7vs12, 3vs4, 3vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 5vs6, 6vs11, 1vs2, 2vs9, 7vs8, 8vs12, 3vs4, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # # results.csv 5vs11, 6vs11, 1vs9, 2vs9, 7vs12, 8vs12, 3vs10, 4vs10 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # create_venn([set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '5vs11', '1vs2', '1vs9', '7vs8', '7vs12', '3vs4', '3vs10']]),
+                     # set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs6', '6vs11', '1vs2', '2vs9', '7vs8', '8vs12', '3vs4', '4vs10']]),
+                     # set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
+                                 # if key in ['5vs11', '6vs11', '1vs9', '2vs9', '7vs12', '8vs12', '3vs10', '4vs10']])],
+                    # ['25C down-DE', 'HiC down-DE', 'ItC down-DE'],
+                    # parser.output_folder,
+                    # ['png', 'eps'])
 
         #####
         # CO2
@@ -556,7 +556,7 @@ if __name__ == '__main__':
         # htseq_counts 1, 3 (count > 0)
         create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [5, 7]]),
                      set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 3]])],
-                    ['c.canephora expressed genes (5and7)(CO2)', 'c.arabica expressed genes (1and3)(CO2)'],
+                    ['c.canephora expressed genes (5and7)', 'c.arabica expressed genes (1and3)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -566,31 +566,22 @@ if __name__ == '__main__':
         # GO ALL (GO > 0)
         create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [5, 7]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()])),
                      set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 3]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()]))],
-                    ['c.canephora expressed genes GO (5and7)(CO2)', 'c.arabica expressed genes GO (1and3)(CO2)'],
+                    ['c.canephora expressed genes GO (5and7)', 'c.arabica expressed genes GO (1and3)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
-        # C380 VS C700:
-        # htseq_counts 1, 5 (count > 0)
-        # htseq_counts 3, 7 (count > 0)
-        create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 5]]),
-                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3, 7]])],
-                    ['C380 expressed genes (1and5)(CO2)', 'C700 expressed genes (3and7)(CO2)'],
-                    parser.output_folder,
-                    ['png', 'eps'])
-
-        # c.canephora DE VS c.arabica DE:
+        # c.canephora DE VS c.arabica DE (co2 effect):
         # results.csv 5vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # results.csv 1vs3 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         create_venn([set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
                                  if key in ['5vs7']]),
                      set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs3']])],
-                    ['c.canephora DE (5vs7)(CO2)', 'c.arabica DE (1vs3)(CO2)'],
+                    ['c.canephora DE (5vs7)(co2 effect)', 'c.arabica DE (1vs3)(co2 effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
-        # c.canephora DE GO VS c.arabica DE GO:
+        # c.canephora DE GO VS c.arabica DE GO (co2 effect):
         # results.csv 5vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # results.csv 1vs3 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # GO 5vs7, 1vs3 (GO > 0)
@@ -598,22 +589,22 @@ if __name__ == '__main__':
                                  if key in ['5vs7']]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items() if key in ['5vs7']])),
                      set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs3']]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items() if key in ['1vs3']]))],
-                    ['c.canephora DE GO (5vs7)(CO2)', 'c.arabica DE GO (1vs3)(CO2)'],
+                    ['c.canephora DE GO (5vs7)(co2 effect)', 'c.arabica DE GO (1vs3)(co2 effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
-        # c.canephora UP-DE VS c.arabica UP-DE:
+        # c.canephora UP-DE VS c.arabica UP-DE (co2 effect):
         # results.csv 5vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # results.csv 1vs3 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         create_venn([set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
                                  if key in ['5vs7']]),
                      set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs3']])],
-                    ['c.canephora up-DE (5vs7)(CO2)', 'c.arabica up-DE (1vs3)(CO2)'],
+                    ['c.canephora up-DE (5vs7)(co2 effect)', 'c.arabica up-DE (1vs3)(co2 effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
-        # c.canephora UP-DE GO VS c.arabica UP-DE GO:
+        # c.canephora UP-DE GO VS c.arabica UP-DE GO (co2 effect):
         # results.csv 5vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # results.csv 1vs3 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # GO 5vs7, 1vs3 (GO > 0)
@@ -621,22 +612,22 @@ if __name__ == '__main__':
                                  if key in ['5vs7']]).intersection(set.union(*[_dict['up'] for key, _dict in seqtable_set_dict.items() if key in ['5vs7']])),
                      set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs3']]).intersection(set.union(*[_dict['up'] for key, _dict in seqtable_set_dict.items() if key in ['1vs3']]))],
-                    ['c.canephora up-DE GO (5vs7)(CO2)', 'c.arabica up-DE GO (1vs3)(CO2)'],
+                    ['c.canephora up-DE GO (5vs7)(co2 effect)', 'c.arabica up-DE GO (1vs3)(co2 effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
-        # c.canephora DOWN-DE VS c.arabica DOWN-DE:
+        # c.canephora DOWN-DE VS c.arabica DOWN-DE (co2 effect):
         # results.csv 5vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # results.csv 1vs3 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         create_venn([set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['5vs7']]),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs3']])],
-                    ['c.canephora down-DE (5vs7)(CO2)', 'c.arabica down-DE (1vs3)(CO2)'],
+                    ['c.canephora down-DE (5vs7)(co2 effect)', 'c.arabica down-DE (1vs3)(co2 effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
-        # c.canephora DOWN-DE GO VS c.arabica DOWN-DE GO:
+        # c.canephora DOWN-DE GO VS c.arabica DOWN-DE GO (co2 effect):
         # results.csv 5vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # results.csv 1vs3 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # GO 5vs7, 1vs3 (GO > 0)
@@ -644,7 +635,7 @@ if __name__ == '__main__':
                                  if key in ['5vs7']]).intersection(set.union(*[_dict['down'] for key, _dict in seqtable_set_dict.items() if key in ['5vs7']])),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs3']]).intersection(set.union(*[_dict['down'] for key, _dict in seqtable_set_dict.items() if key in ['1vs3']]))],
-                    ['c.canephora down-DE GO (5vs7)(CO2)', 'c.arabica down-DE GO (1vs3)(CO2)'],
+                    ['c.canephora down-DE GO (5vs7)(co2 effect)', 'c.arabica down-DE GO (1vs3)(co2 effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -654,7 +645,7 @@ if __name__ == '__main__':
                                  if key in ['5vs7']]),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['5vs7']])],
-                    ['c.canephora UP-DE (5vs7)(CO2)', 'c.canephora DOWN-DE (5vs7)(CO2)'],
+                    ['c.canephora UP-DE (5vs7)(co2 effect)', 'c.canephora DOWN-DE (5vs7)(co2 effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -665,7 +656,7 @@ if __name__ == '__main__':
                                  if key in ['5vs7']]).intersection(set.union(*[_dict['up'] for key, _dict in seqtable_set_dict.items() if key in ['5vs7']])),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['5vs7']]).intersection(set.union(*[_dict['down'] for key, _dict in seqtable_set_dict.items() if key in ['5vs7']]))],
-                    ['c.canephora UP-DE GO (5vs7)(CO2)', 'c.canephora DOWN-DE GO (5vs7)(CO2)'],
+                    ['c.canephora UP-DE GO (5vs7)(co2 effect)', 'c.canephora DOWN-DE GO (5vs7)(co2 effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -675,7 +666,7 @@ if __name__ == '__main__':
                                  if key in ['1vs3']]),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs3']])],
-                    ['c.arabica UP-DE (1vs3)(CO2)', 'c.arabica DOWN-DE (1vs3)(CO2)'],
+                    ['c.arabica UP-DE (1vs3)(co2 effect)', 'c.arabica DOWN-DE (1vs3)(co2 effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -686,50 +677,103 @@ if __name__ == '__main__':
                                  if key in ['1vs3']]).intersection(set.union(*[_dict['up'] for key, _dict in seqtable_set_dict.items() if key in ['1vs3']])),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs3']]).intersection(set.union(*[_dict['down'] for key, _dict in seqtable_set_dict.items() if key in ['1vs3']]))],
-                    ['c.arabica UP-DE GO (1vs3)(CO2)', 'c.arabica DOWN-DE GO (1vs3)(CO2)'],
+                    ['c.arabica UP-DE GO (1vs3)(co2 effect)', 'c.arabica DOWN-DE GO (1vs3)(co2 effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
-        # C380 DE VS C700 DE:
+        # C380 VS C700:
+        # htseq_counts 1, 5 (count > 0)
+        # htseq_counts 3, 7 (count > 0)
+        create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 5]]),
+                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3, 7]])],
+                    ['C380 expressed genes (1and5)', 'C700 expressed genes (3and7)'],
+                    parser.output_folder,
+                    ['png', 'eps'])
+
+        # C380 GO VS C700 GO:
+        # htseq_counts 1, 5 (count > 0)
+        # htseq_counts 3, 7 (count > 0)
+        # GO ALL (GO > 0)
+        create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1, 5]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()])),
+                     set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3, 7]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()]))],
+                    ['C380 expressed genes GO (1and5)', 'C700 expressed genes GO (3and7)'],
+                    parser.output_folder,
+                    ['png', 'eps'])
+
+        # C380 DE VS C700 DE (genome effect):
         # results.csv 1vs5 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # results.csv 3vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         create_venn([set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs5']]),
                      set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
                                  if key in ['3vs7']])],
-                    ['C380 DE (1vs5)(CO2)', 'C700 DE (3vs7)(CO2)'],
+                    ['C380 DE (1vs5)(genome effect)', 'C700 DE (3vs7)(genome effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
-        # C380 UP-DE VS C700 UP-DE:
+        # C380 DE GO VS C700 DE GO (genome effect):
+        # results.csv 1vs5 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # results.csv 3vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # GO 5vs7, 1vs3 (GO > 0)
+        create_venn([set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
+                                 if key in ['1vs5']]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items() if key in ['1vs5']])),
+                     set.union(*[_dict['up'].union(_dict['down']) for key, _dict in de_results_set_dict.items()
+                                 if key in ['3vs7']]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items() if key in ['3vs7']]))],
+                    ['C380 DE GO (1vs5)(genome effect)', 'C700 DE GO (3vs7)(genome effect)'],
+                    parser.output_folder,
+                    ['png', 'eps'])
+
+        # C380 UP-DE VS C700 UP-DE (genome effect):
         # results.csv 1vs5 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # results.csv 3vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         create_venn([set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs5']]),
                      set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
                                  if key in ['3vs7']])],
-                    ['C380 up-DE (1vs5)(CO2)', 'C700 up-DE (3vs7)(CO2)'],
+                    ['C380 up-DE (1vs5)(genome effect)', 'C700 up-DE (3vs7)(genome effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
-        # C380 DOWN-DE VS C700 DOWN-DE:
+        # C380 UP-DE GO VS C700 UP-DE GO (genome effect):
+        # results.csv 1vs5 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # results.csv 3vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        create_venn([set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
+                                 if key in ['1vs5']]).intersection(set.union(*[_dict['up'] for key, _dict in seqtable_set_dict.items() if key in ['1vs5']])),
+                     set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
+                                 if key in ['3vs7']]).intersection(set.union(*[_dict['up'] for key, _dict in seqtable_set_dict.items() if key in ['3vs7']]))],
+                    ['C380 up-DE GO (1vs5)(genome effect)', 'C700 up-DE GO (3vs7)(genome effect)'],
+                    parser.output_folder,
+                    ['png', 'eps'])
+
+        # C380 DOWN-DE VS C700 DOWN-DE (genome effect):
         # results.csv 1vs5 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         # results.csv 3vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         create_venn([set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs5']]),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['3vs7']])],
-                    ['C380 down-DE (1vs5)(CO2)', 'C700 down-DE (3vs7)(CO2)'],
+                    ['C380 down-DE (1vs5)(genome effect)', 'C700 down-DE (3vs7)(genome effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
-        # C380 UP-DE VS C380 DOWN-DE:
+        # C380 DOWN-DE GO VS C700 DOWN-DE GO (genome effect):
+        # results.csv 1vs5 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        # results.csv 3vs7 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
+        create_venn([set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
+                                 if key in ['1vs5']]).intersection(set.union(*[_dict['down'] for key, _dict in seqtable_set_dict.items() if key in ['1vs5']])),
+                     set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
+                                 if key in ['3vs7']]).intersection(set.union(*[_dict['down'] for key, _dict in seqtable_set_dict.items() if key in ['3vs7']]))],
+                    ['C380 down-DE GO (1vs5)(genome effect)', 'C700 down-DE GO (3vs7)(genome effect)'],
+                    parser.output_folder,
+                    ['png', 'eps'])
+
+        # C380 UP-DE VS C380 DOWN-DE (genome effect):
         # results.csv 1vs5 (FDR p-adjusted < 0.05, log2FoldChange > 0 & < 0)
         create_venn([set.union(*[_dict['up'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs5']]),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs5']])],
-                    ['C380 up-DE (1vs5)(CO2)', 'C380 down-DE (1vs5)(CO2)'],
+                    ['C380 up-DE (1vs5)(genome effect)', 'C380 down-DE (1vs5)(genome effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -740,7 +784,7 @@ if __name__ == '__main__':
                                  if key in ['1vs5']]).intersection(set.union(*[_dict['up'] for key, _dict in seqtable_set_dict.items() if key in ['1vs5']])),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['1vs5']]).intersection(set.union(*[_dict['down'] for key, _dict in seqtable_set_dict.items() if key in ['1vs5']]))],
-                    ['C380 up-DE GO (1vs5)(CO2)', 'C380 down-DE GO (1vs5)(CO2)'],
+                    ['C380 up-DE GO (1vs5)(genome effect)', 'C380 down-DE GO (1vs5)(genome effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -750,7 +794,7 @@ if __name__ == '__main__':
                                  if key in ['3vs7']]),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['3vs7']])],
-                    ['C700 up-DE (3vs7)(CO2)', 'C700 down-DE (3vs7)(CO2)'],
+                    ['C700 up-DE (3vs7)(genome effect)', 'C700 down-DE (3vs7)(genome effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -761,7 +805,7 @@ if __name__ == '__main__':
                                  if key in ['3vs7']]).intersection(set.union(*[_dict['up'] for key, _dict in seqtable_set_dict.items() if key in ['3vs7']])),
                      set.union(*[_dict['down'] for key, _dict in de_results_set_dict.items()
                                  if key in ['3vs7']]).intersection(set.union(*[_dict['down'] for key, _dict in seqtable_set_dict.items() if key in ['3vs7']]))],
-                    ['C700 up-DE GO (3vs7)(CO2)', 'C700 down-DE GO (3vs7)(CO2)'],
+                    ['C700 up-DE GO (3vs7)(genome effect)', 'C700 down-DE GO (3vs7)(genome effect)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -769,7 +813,7 @@ if __name__ == '__main__':
         # htseq_counts 1, 3 (count > 0)
         create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1]]),
                      set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3]])],
-                    ['c.arabica C380 expressed genes (1)(CO2)', 'c.arabica C700 expressed genes (3)(CO2)'],
+                    ['c.arabica C380 expressed genes (1)', 'c.arabica C700 expressed genes (3)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -778,7 +822,7 @@ if __name__ == '__main__':
         # GO ALL (GO > 0)
         create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()])),
                      set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()]))],
-                    ['c.arabica C380 expressed genes GO (1)(CO2)', 'c.arabica C700 expressed genes GO (3)(CO2)'],
+                    ['c.arabica C380 expressed genes GO (1)', 'c.arabica C700 expressed genes GO (3)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -786,7 +830,7 @@ if __name__ == '__main__':
         # htseq_counts 5, 7 (count > 0)
         create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [5]]),
                      set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [7]])],
-                    ['c.canephora C380 expressed genes (5)(CO2)', 'c.canephora C700 expressed genes (7)(CO2)'],
+                    ['c.canephora C380 expressed genes (5)', 'c.canephora C700 expressed genes (7)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -795,7 +839,7 @@ if __name__ == '__main__':
         # GO ALL (GO > 0)
         create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [5]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()])),
                      set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [7]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()]))],
-                    ['c.canephora C380 expressed genes GO (5)(CO2)', 'c.canephora C700 expressed genes GO (7)(CO2)'],
+                    ['c.canephora C380 expressed genes GO (5)', 'c.canephora C700 expressed genes GO (7)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -803,7 +847,7 @@ if __name__ == '__main__':
         # htseq_counts 1, 5 (count > 0)
         create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1]]),
                      set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [5]])],
-                    ['C380 c.arabica expressed genes (1)(CO2)', 'C380 c.canephora expressed genes (5)(CO2)'],
+                    ['C380 c.arabica expressed genes (1)', 'C380 c.canephora expressed genes (5)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -812,7 +856,7 @@ if __name__ == '__main__':
         # GO ALL (GO > 0)
         create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [1]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()])),
                      set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [5]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()]))],
-                    ['C380 c.arabica expressed genes GO (1)(CO2)', 'C380 c.canephora expressed genes GO (5)(CO2)'],
+                    ['C380 c.arabica expressed genes GO (1)', 'C380 c.canephora expressed genes GO (5)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -820,7 +864,7 @@ if __name__ == '__main__':
         # htseq_counts 3, 7 (count > 0)
         create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3]]),
                      set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [7]])],
-                    ['C700 c.arabica expressed genes (3)(CO2)', 'C700 c.canephora expressed genes (7)(CO2)'],
+                    ['C700 c.arabica expressed genes (3)', 'C700 c.canephora expressed genes (7)'],
                     parser.output_folder,
                     ['png', 'eps'])
 
@@ -829,7 +873,7 @@ if __name__ == '__main__':
         # GO ALL (GO > 0)
         create_venn([set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [3]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()])),
                      set.union(*[_set for key, _set in htseq_counts_set_dict.items() if key in [7]]).intersection(set.union(*[_dict['up'].union(_dict['down']) for key, _dict in seqtable_set_dict.items()]))],
-                    ['C700 c.arabica expressed genes GO (3)(CO2)', 'C700 c.canephora expressed genes GO (7)(CO2)'],
+                    ['C700 c.arabica expressed genes GO (3)', 'C700 c.canephora expressed genes GO (7)'],
                     parser.output_folder,
                     ['png', 'eps'])
 

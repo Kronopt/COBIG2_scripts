@@ -52,7 +52,11 @@ DESeq2_compare_ab <- function(a, b){
 	print(sampleFiles)
 
 	# condition is a vs b
-	sampleCondition <- c(a, a, a, b, b, b)  # always 3 replicates for this experiment
+	if (a == "1") {
+		sampleCondition <- c(a, a, b, b, b)  # sample 1 only has 2 replicas
+	} else {
+		sampleCondition <- c(a, a, a, b, b, b)  # other samples have 3 replicas
+	}
 	cat("sampleCondition:\n")
 	print(sampleCondition)
 
@@ -89,14 +93,28 @@ DESeq2_compare_ab <- function(a, b){
 	select <- order(rowMeans(counts(dds, normalized=TRUE)), decreasing=TRUE)[1:20]
 	df <- as.data.frame(colData(dds)[, c("condition", "sizeFactor")])
 	png(paste(a_vs_b_title, "heatmap.png", sep="_"), width=960, height=960)
+	dev.control('enable')
 	pheatmap(assay(ntd)[select, ], cluster_rows=FALSE, show_rownames=FALSE,
 	  cluster_cols=FALSE, annotation_col=df)
+	dev.copy(postscript, paste(a_vs_b_title, "heatmap.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.off()
 	dev.off()
 
 	# heatmap 2
-	png(paste(a_vs_b_title, "heatmap2.png", sep="_"), width=960, height=960)
+	png(paste(a_vs_b_title, "heatmap2_20.png", sep="_"), width=960, height=960)
+	dev.control('enable')
 	heatmap.2(assay(ntd)[select, ], trace='none', margins=c(3, 8),
 	  labCol=substr(colnames(assay(ntd)[select, ]), start=9, stop=10))
+	dev.copy(postscript, paste(a_vs_b_title, "heatmap2_20.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.off()
+	dev.off()
+
+	png(paste(a_vs_b_title, "heatmap2_all.png", sep="_"), width=960, height=960)
+	dev.control('enable')
+	heatmap.2(assay(ntd), trace='none', margins=c(3, 8),
+	  labCol=substr(colnames(assay(ntd)), start=9, stop=10), labRow=NULL)
+	dev.copy(postscript, paste(a_vs_b_title, "heatmap2_all.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.off()
 	dev.off()
 
 	# heatmap of the sample-to-sample distances
@@ -108,30 +126,52 @@ DESeq2_compare_ab <- function(a, b){
 	colnames(sampleDistMatrix) <- NULL
 	colors <- colorRampPalette(rev(brewer.pal(9, "Blues")))(255)
 	png(paste(a_vs_b_title, "heatmap_sample_to_sample.png", sep="_"),
-		width=960, height=960)
+				width=960, height=960)
+	dev.control('enable')
 	pheatmap(sampleDistMatrix, clustering_distance_rows=sampleDists,
 		clustering_distance_cols=sampleDists, col=colors)
+	dev.copy(postscript, paste(a_vs_b_title, "heatmap_sample_to_sample.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.off()
 	dev.off()
 
 	# cook's distance boxplot
 	cat("Cook's boxplot...\n")
 	png(paste(a_vs_b_title, "cooks_boxplot.png", sep="_"), width=960, height=960)
+	dev.control('enable')
 	par(mar=c(8,5,2,2))
 	boxplot(log10(assays(dds)[["cooks"]]), range=0, las=2)
+	dev.copy(postscript, paste(a_vs_b_title, "cooks_boxplot.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.off()
 	dev.off()
 
 	# log2 fold changes plot
 	cat("Log2 fold changes plot...\n")
 	png(paste(a_vs_b_title, "log2_fold_changes.png", sep="_"),
 		width=960, height=960)
+	dev.control('enable')
 	plotMA(res, main=a_vs_b_title, ylim=c(-10,10))
+	dev.copy(postscript, paste(a_vs_b_title, "log2_fold_changes.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.off()
+	dev.off()
+
+	# log2 fold changes box plot
+	cat("Log2 fold changes box plot...\n")
+	png(paste(a_vs_b_title, "log2_fold_changes_boxplot.png", sep="_"),
+	    width=960, height=960)
+	dev.control('enable')
+	boxplot(res[["log2FoldChange"]], names=a_vs_b_title)
+	dev.copy(postscript, paste(a_vs_b_title, "log2_fold_changes_boxplot.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.off()
 	dev.off()
 
 	# shrunken log2 fold changes plot
 	cat("Shrunken log2 fold changes plot...\n")
 	png(paste(a_vs_b_title, "shrunken_log2_fold_changes.png", sep="_"),
 		width=960, height=960)
+	dev.control('enable')
 	plotMA(resShrink, main=paste(a_vs_b_title, "shrunken"), ylim=c(-10,10))
+	dev.copy(postscript, paste(a_vs_b_title, "shrunken_log2_fold_changes.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.off()
 	dev.off()
 
 	# HTML Report
