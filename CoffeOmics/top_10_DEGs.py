@@ -68,22 +68,22 @@ if __name__ == '__main__':
 
                 # up-regulated genes
                 values_csv_writer.writerow([de_results_name + ' UP-regulated'])  # sub-header 
-                for gene_name, _ in top_10_de_up_list:
+                for gene_name, foldchange in top_10_de_up_list:
                     # genes_description = seqtable_dict[de_results_name]['up'][gene_name]
                     try:
                         genes_description = seqtable_dict[gene_name]
                     except KeyError:
                         genes_description = ''
-                    values_csv_writer.writerow([gene_name, genes_description])
+                    values_csv_writer.writerow([gene_name, genes_description, foldchange])
 
                 # down-regulated genes
                 values_csv_writer.writerow([de_results_name + ' DOWN-regulated'])  # sub-header
-                for gene_name, _ in top_10_de_down_list:
+                for gene_name, foldchange in top_10_de_down_list:
                     try:
                         genes_description = seqtable_dict[gene_name]
                     except KeyError:
                         genes_description = ''
-                    values_csv_writer.writerow([gene_name, genes_description])
+                    values_csv_writer.writerow([gene_name, genes_description, foldchange])
         print('OK')
 
     else:

@@ -66,7 +66,7 @@ DESeq2_compare_ab <- function(a, b){
 
 	cat("Reading htseq_count files...\n")
 	ddsHTSeq <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable,
-	  directory = directory,
+		directory = directory,
 		design= ~ condition)
 
 	# filter low reads count genes (<15, as per the original MGX analysis)
@@ -95,8 +95,9 @@ DESeq2_compare_ab <- function(a, b){
 	png(paste(a_vs_b_title, "heatmap.png", sep="_"), width=960, height=960)
 	dev.control('enable')
 	pheatmap(assay(ntd)[select, ], cluster_rows=FALSE, show_rownames=FALSE,
-	  cluster_cols=FALSE, annotation_col=df)
-	dev.copy(postscript, paste(a_vs_b_title, "heatmap.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+		cluster_cols=FALSE, annotation_col=df)
+	dev.copy(postscript, paste(a_vs_b_title, "heatmap.eps", sep="_"), width=960, height=960,
+		onefile=TRUE, horizontal=FALSE)
 	dev.off()
 	dev.off()
 
@@ -104,16 +105,18 @@ DESeq2_compare_ab <- function(a, b){
 	png(paste(a_vs_b_title, "heatmap2_20.png", sep="_"), width=960, height=960)
 	dev.control('enable')
 	heatmap.2(assay(ntd)[select, ], trace='none', margins=c(3, 8),
-	  labCol=substr(colnames(assay(ntd)[select, ]), start=9, stop=10))
-	dev.copy(postscript, paste(a_vs_b_title, "heatmap2_20.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+		labCol=substr(colnames(assay(ntd)[select, ]), start=9, stop=10))
+	dev.copy(postscript, paste(a_vs_b_title, "heatmap2_20.eps", sep="_"), width=960,
+		height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
 	dev.off()
 
 	png(paste(a_vs_b_title, "heatmap2_all.png", sep="_"), width=960, height=960)
 	dev.control('enable')
 	heatmap.2(assay(ntd), trace='none', margins=c(3, 8),
-	  labCol=substr(colnames(assay(ntd)), start=9, stop=10), labRow=NULL)
-	dev.copy(postscript, paste(a_vs_b_title, "heatmap2_all.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+		labCol=substr(colnames(assay(ntd)), start=9, stop=10), labRow=NULL)
+	dev.copy(postscript, paste(a_vs_b_title, "heatmap2_all.eps", sep="_"), width=960,
+		height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
 	dev.off()
 
@@ -125,12 +128,12 @@ DESeq2_compare_ab <- function(a, b){
 	rownames(sampleDistMatrix) <- paste(vsd$condition, vsd$sizeFactor, sep="-")
 	colnames(sampleDistMatrix) <- NULL
 	colors <- colorRampPalette(rev(brewer.pal(9, "Blues")))(255)
-	png(paste(a_vs_b_title, "heatmap_sample_to_sample.png", sep="_"),
-				width=960, height=960)
+	png(paste(a_vs_b_title, "heatmap_sample_to_sample.png", sep="_"), width=960, height=960)
 	dev.control('enable')
 	pheatmap(sampleDistMatrix, clustering_distance_rows=sampleDists,
 		clustering_distance_cols=sampleDists, col=colors)
-	dev.copy(postscript, paste(a_vs_b_title, "heatmap_sample_to_sample.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.copy(postscript, paste(a_vs_b_title, "heatmap_sample_to_sample.eps", sep="_"),
+		width=960, height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
 	dev.off()
 
@@ -140,7 +143,8 @@ DESeq2_compare_ab <- function(a, b){
 	dev.control('enable')
 	par(mar=c(8,5,2,2))
 	boxplot(log10(assays(dds)[["cooks"]]), range=0, las=2)
-	dev.copy(postscript, paste(a_vs_b_title, "cooks_boxplot.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.copy(postscript, paste(a_vs_b_title, "cooks_boxplot.eps", sep="_"), width=960,
+		height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
 	dev.off()
 
@@ -150,7 +154,8 @@ DESeq2_compare_ab <- function(a, b){
 		width=960, height=960)
 	dev.control('enable')
 	plotMA(res, main=a_vs_b_title, ylim=c(-10,10))
-	dev.copy(postscript, paste(a_vs_b_title, "log2_fold_changes.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.copy(postscript, paste(a_vs_b_title, "log2_fold_changes.eps", sep="_"), width=960,
+		height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
 	dev.off()
 
@@ -159,8 +164,10 @@ DESeq2_compare_ab <- function(a, b){
 	png(paste(a_vs_b_title, "log2_fold_changes_boxplot.png", sep="_"),
 	    width=960, height=960)
 	dev.control('enable')
+	boxplot_fig <- res[["log2FoldChange"]]
 	boxplot(res[["log2FoldChange"]], names=a_vs_b_title)
-	dev.copy(postscript, paste(a_vs_b_title, "log2_fold_changes_boxplot.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.copy(postscript, paste(a_vs_b_title, "log2_fold_changes_boxplot.eps", sep="_"),
+		width=960, height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
 	dev.off()
 
@@ -170,7 +177,8 @@ DESeq2_compare_ab <- function(a, b){
 		width=960, height=960)
 	dev.control('enable')
 	plotMA(resShrink, main=paste(a_vs_b_title, "shrunken"), ylim=c(-10,10))
-	dev.copy(postscript, paste(a_vs_b_title, "shrunken_log2_fold_changes.eps", sep="_"), width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.copy(postscript, paste(a_vs_b_title, "shrunken_log2_fold_changes.eps", sep="_"),
+		width=960, height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
 	dev.off()
 
@@ -194,22 +202,42 @@ DESeq2_compare_ab <- function(a, b){
 
 	# Finished
 	cat("Finished DE of", a, "vs", b, "\n")
+	
+	return(c(boxplot_fig, a_vs_b_title))
 }
 
+foldchange_boxplots = list()
+a_vs_b_titles = list()
 
 # for each comparison, run DESeq2
 for (comparison in args) {
-	# split args
-	avb <- strsplit(comparison, "v")
-	a <- avb[[1]][1]
-	b <- avb[[1]][2]
-
-	# a and b must be numbers as string
-	# string comparison must be a < b, because linux orders files this way
-	if (a >= b) {
-		stop("a must be < b (string comparison)", call.=FALSE)
-	}
-
-	# run DESeq2
-	DESeq2_compare_ab(a, b)
+    # split args
+    avb <- strsplit(comparison, "v")
+    a <- avb[[1]][1]
+    b <- avb[[1]][2]
+    
+    # a and b must be numbers as string
+    # string comparison must be a < b, because linux orders files this way
+    if (a >= b) {
+        stop("a must be < b (string comparison)", call.=FALSE)
+    }
+    
+    # run DESeq2
+    multi_figs <- DESeq2_compare_ab(a, b)
+    
+    # build multi figures vetors
+    foldchange_boxplots = c(foldchange_boxplots, list(head(multi_figs, n=-1)))
+    a_vs_b_titles = c(a_vs_b_titles, list(tail(multi_figs, n=1)))
 }
+
+# build multi figures
+cat("Building multi figures...", "\n")
+
+# log2_fold_changes_boxplot
+png("log2_fold_changes_boxplot.png", width=960, height=960)
+dev.control('enable')
+boxplot(as.numeric(unlist(foldchange_boxplots[[1]])), as.numeric(unlist(foldchange_boxplots[[2]])), as.numeric(unlist(foldchange_boxplots[[3]])), as.numeric(unlist(foldchange_boxplots[[4]])), names=a_vs_b_titles)
+dev.copy(postscript, "log2_fold_changes_boxplot.eps", width=960, height=960, onefile=TRUE,
+         horizontal=FALSE)
+dev.off()
+dev.off()

@@ -41,7 +41,7 @@ def get_seqtable_go_terms(seqtable_csv):
 	returns a dictionary where key=go_term, value=[(gene_id, gene_description), ...]
 	"""
 	final_dict = {}
-	
+
 	next(seqtable_csv)  # ignore header
 	for row in seqtable_csv:
 		row = row.split('\t')
@@ -51,7 +51,7 @@ def get_seqtable_go_terms(seqtable_csv):
 			go_ids = row[7].split('; ')  # row[7] is GO ids
 			for go in go_ids:
 				go = go[2:]  # remove starting C, F or P
-				
+
 				if go not in final_dict:
 					final_dict[go] = [gene_id_and_description]
 				else:
@@ -73,12 +73,12 @@ if __name__ == '__main__':
 	if (os.path.exists(parser.seqtable_folder) and
 		os.path.exists(parser.de_results_folder) and
 		os.path.exists(parser.output_folder)):
-		
+
 		# quickGO API call
 		print('Getting descendants ... ', end='')
 		descendants = get_descendants(parser.go_terms)
 		print('OK')
-		
+
 		# seqtables
 		print('Parsing seqtable.tab files ... ', end='')
 		seqtab_go_terms = []
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 			with open(os.path.join(parser.seqtable_folder, seqtable_file)) as seqtab_file:
 				seqtab_go_terms.append(get_seqtable_go_terms(seqtab_file))
 		print('OK')
-		
+
 		# de_results
 		print('Parsing DE results.csv files ... ', end='')
 		list_de_results = [de_results_file for de_results_file in os.listdir(parser.de_results_folder)
@@ -104,11 +104,11 @@ if __name__ == '__main__':
 					if row[6] != 'NA' and float(row[6]) < 0.05:  # FDR p-adjusted
 						de_results_dict[de_results_name][row[0]] = row[2]  # log2FoldChange
 		print('OK')
-		
+
 		# compare seqtable go terms vs quickGO descendants
 		print('Checking which go terms are descendants ... ', end='')
 		verified_descendants = {}  # key=(go_term, go_term_description), value=set((descendant_id, descendant_description), ...)
-		
+
 		for seqtable_dict in seqtab_go_terms:  # dict
 			for go_term_seqtable in seqtable_dict:  # key=go_term, value=[(gene_id, gene_description), ...]
 				for go_term_quickgo in descendants:    # key=go_term, value=(go_term_description, [descendants, ...])
@@ -118,7 +118,7 @@ if __name__ == '__main__':
 						else:
 							verified_descendants[(go_term_quickgo, descendants[go_term_quickgo][0])].update(seqtable_dict[go_term_seqtable])
 		print('OK')
-		
+
 		# write output file
 		print('Writing output file ... ', end='')
 		header = ['GO term', 'GO term description', 'Gene ID (descendant)', 'Gene Description', 'Foldchange 1vs3','Foldchange 5vs7', 'Foldchange 1vs5', 'Foldchange 3vs7']
@@ -126,10 +126,10 @@ if __name__ == '__main__':
 		with open(os.path.join(parser.output_folder, 'table5.csv'), 'w', newline= '') as csv_file:
 			csv_writer = csv.writer(csv_file)
 			csv_writer.writerow(header)  # write header
-			
+
 			for go_term_and_description in verified_descendants:
 				for descend_id, descend_descrip in verified_descendants[go_term_and_description]:
-					
+
 					csv_writer.writerow([*(go_term_and_description), descend_id, descend_descrip,
 					de_results_dict['1vs3'].get(descend_id, ''), de_results_dict['5vs7'].get(descend_id, ''),
 					de_results_dict['1vs5'].get(descend_id, ''), de_results_dict['3vs7'].get(descend_id, '')])
