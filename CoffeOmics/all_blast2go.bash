@@ -38,6 +38,7 @@ for fasta in $(find $1 -name '*.fasta'); do
 	-savelog $2/$fasta_name/$fasta_name\_log.txt \
 	-savereport $2/$fasta_name/$fasta_name\_report.pdf \
 	-saveseqtable $2/$fasta_name/$fasta_name\_seqtable.tab \
+	-saveb2g $2/$fasta_name/$fasta_name\_b2g.b2g \
 	-statistics all -nameprefix $fasta_name -workspace $2
 
 	# clean blastXML folder
