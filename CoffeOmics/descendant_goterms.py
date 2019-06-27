@@ -11,9 +11,14 @@ import argparse, csv, json, os, requests, sys, urllib
 # Photosynthesis				P:GO:0015979
 # Chlorophyll					P:GO:0015994
 # Pyruvate kinase				F:GO:0004743
-# Malate dehydrogenase			F:GO:0016615
-# Rubisco/Ribulose bisphosphate	F:GO:0016984
-# get_descendants(['GO:0015979', 'GO:0015994', 'GO:0004743', 'GO:0016615', 'GO:0016984'])
+# Malate dehydrogenase				F:GO:0016615
+# Rubisco/Ribulose bisphosphate			F:GO:0016984
+# Lipid Metabolic Process			P:GO:0006629
+# Antioxidant Activity				F:GO:0016209
+# Cellular Respiration				P:GO:0045333
+# Aerobic Respiration				P:GO:0009060
+
+# get_descendants(['GO:0015979', 'GO:0015994', 'GO:0004743', 'GO:0016615', 'GO:0016984', 'GO:0006629', 'GO:0016209', 'GO:0045333', 'GO:0009060'])
 
 URL = "https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/{}/descendants?relations=is_a%2Cpart_of%2Coccurs_in%2Cregulates"
 

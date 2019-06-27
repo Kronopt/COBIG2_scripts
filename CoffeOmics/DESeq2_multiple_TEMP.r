@@ -25,7 +25,7 @@ directory <- getwd()
 cat("selected directory is:", directory, "\n")
 
 # ask if folder is correct
-cat("Is this the folder containing the htseq_counts files? (y/n) ")
+cat("Is this the folder containing the htseq_counts files? (y/n): ")
 read_stdin <- file("stdin")
 answer <- readLines(read_stdin, 1)
 close(read_stdin)
@@ -34,7 +34,7 @@ if (answer!="y") {
 }
 
 # loading libraries
-cat("\nLoading libraries...\n")
+cat("Loading libraries...\n")
 suppressMessages(library("DESeq2"))
 suppressMessages(library("pheatmap"))
 suppressMessages(library("ReportingTools"))
@@ -42,7 +42,7 @@ suppressMessages(library("RColorBrewer"))
 suppressMessages(library("gplots"))
 
 DESeq2_compare_ab <- function(a, b){
-	cat("Comparing samples", a, "and", b, "\n")
+	cat("\nComparing samples", a, "and", b, "\n")
 
 	# filter sample files to the ones defined in a and b
 	# expects 3 replicates for each sample
@@ -78,7 +78,7 @@ DESeq2_compare_ab <- function(a, b){
 	######
 	# DE #
 	######
-	cat("\nSTARTING DE\n")
+	cat("STARTING DE\n")
 	dds <- suppressMessages(DESeq(ddsHTSeq))
 	res <- results(dds)
 
@@ -187,14 +187,14 @@ DESeq2_compare_ab <- function(a, b){
 	dev.off()
 
 	# HTML Report
-	cat("Html report...\n")
-	htmlreport <- HTMLReport(shortName=paste(a_vs_b_title, 'html_report', sep="_"),
-		title=paste(a_vs_b_title, 'DESeq2 html report', sep=" "),
-		reportDirectory=paste("./", a_vs_b_title, "_html_report", sep=""))
-	publish(dds, htmlreport, pvalueCutoff=0.05, annotation.db="org.Mm.eg.db",
-		factor=sampleCondition, reportDir=paste("./", a_vs_b_title,
-		"_html_report", sep=""))
-	finish(htmlreport)
+	# cat("Html report...\n")
+	# htmlreport <- HTMLReport(shortName=paste(a_vs_b_title, 'html_report', sep="_"),
+	# 	title=paste(a_vs_b_title, 'DESeq2 html report', sep=" "),
+	# 	reportDirectory=paste("./", a_vs_b_title, "_html_report", sep=""))
+	# publish(dds, htmlreport, pvalueCutoff=0.05, annotation.db="org.Mm.eg.db",
+	# 	factor=sampleCondition, reportDir=paste("./", a_vs_b_title,
+	# 	"_html_report", sep=""))
+	# finish(htmlreport)
 
 	# data
 	cat("Data files...\n")
@@ -206,12 +206,13 @@ DESeq2_compare_ab <- function(a, b){
 
 	# Finished
 	cat("Finished DE of", a, "vs", b, "\n")
+	cat("------------------------------------\n")
 	
 	return(c(boxplot_fig, a_vs_b_title))
 }
 
 foldchange_boxplots = list()
-a_vs_b_titles = list()
+a_vs_b_titles = character(length = 0)
 
 # for each comparison, run DESeq2
 for (comparison in args) {
@@ -229,8 +230,8 @@ for (comparison in args) {
     multi_figs <- DESeq2_compare_ab(a, b)
     
     # build multi figures vetors
-    foldchange_boxplots = c(foldchange_boxplots, list(head(multi_figs, n=-1)))
-    a_vs_b_titles = c(a_vs_b_titles, list(tail(multi_figs, n=1)))
+    foldchange_boxplots = c(foldchange_boxplots, list(as.numeric(head(multi_figs, n=-1))))
+    a_vs_b_titles = c(a_vs_b_titles, tail(multi_figs, n=1))
 }
 
 # build multi figures
@@ -239,7 +240,7 @@ cat("Building multi figures...", "\n")
 # log2_fold_changes_boxplot
 png("log2_fold_changes_boxplot.png", width=960, height=960)
 dev.control('enable')
-boxplot(as.numeric(unlist(foldchange_boxplots[[1]])), as.numeric(unlist(foldchange_boxplots[[2]])), as.numeric(unlist(foldchange_boxplots[[3]])), as.numeric(unlist(foldchange_boxplots[[4]])), as.numeric(unlist(foldchange_boxplots[[5]])), as.numeric(unlist(foldchange_boxplots[[6]])), as.numeric(unlist(foldchange_boxplots[[7]])), as.numeric(unlist(foldchange_boxplots[[8]])), as.numeric(unlist(foldchange_boxplots[[9]])), as.numeric(unlist(foldchange_boxplots[[10]])), as.numeric(unlist(foldchange_boxplots[[11]])), as.numeric(unlist(foldchange_boxplots[[12]])), names=a_vs_b_titles)
+do.call(boxplot, list(foldchange_boxplots, names=a_vs_b_titles))
 dev.copy(postscript, "log2_fold_changes_boxplot.eps", width=960, height=960, onefile=TRUE,
          horizontal=FALSE)
 dev.off()
