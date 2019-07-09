@@ -1,13 +1,14 @@
 #!/usr/bin/env Rscript
 
-# Performs Differential Expression analysis with DESeq2
+# Performs Differential Expression analysis with DESeq2 and EdgeR
 # ARGS are the sample numbers to compare
-# ex: 'script.r 1v2 1v3 10v11' will use DESeq2 to compare samples 1v2, 1v3 and 10v11
+# ex: 'script.r 1v2 1v3 10v11' will use DESeq2 and EdgeR to compare samples 1v2, 1v3 and 10v11
 
 # Required packages
 # if (!requireNamespace("BiocManager", quietly = TRUE))
 #     install.packages("BiocManager")
 # BiocManager::install("DESeq2", version = "3.8")
+# BiocManager::install("edgeR", version = "3.8")
 # BiocManager::install("apeglm", version = "3.8")  # shrinkage
 # BiocManager::install("ReportingTools", version = "3.8")  # html report
 # install.packages("pheatmap")
@@ -35,13 +36,14 @@ if (answer!="y") {
 
 # loading libraries
 cat("Loading libraries...\n")
+suppressMessages(library("edgeR"))  # edgeR must be loaded before DESeq2
 suppressMessages(library("DESeq2"))
 suppressMessages(library("pheatmap"))
 suppressMessages(library("ReportingTools"))
 suppressMessages(library("RColorBrewer"))
 suppressMessages(library("gplots"))
 
-DESeq2_compare_ab <- function(a, b){
+compare_ab <- function(a, b){
 	cat("\nComparing samples", a, "and", b, "\n")
 
 	# filter sample files to the ones defined in a and b
@@ -67,33 +69,60 @@ DESeq2_compare_ab <- function(a, b){
 		condition = sampleCondition)
 
 	cat("Reading htseq_count files...\n")
-	ddsHTSeq <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable,
+	deseq2_HTSeq <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable,
 		directory = directory,
 		design= ~ condition)
+	edger_HTSeq <- readDGE(sampleFiles, group=sampleCondition)
 
 	# filter low reads count genes (<15, as per the original MGX analysis)
-	keep <- rowSums(counts(ddsHTSeq)) >= 15
-	ddsHTSeq <- ddsHTSeq[keep,]
+	keep <- rowSums(counts(deseq2_HTSeq)) >= 15
+	deseq2_HTSeq <- deseq2_HTSeq[keep,]
+	keep <- filterByExpr(edger_HTSeq)
+	edger_HTSeq <- edger_HTSeq[keep, , keep.lib.sizes=FALSE]
 
 	######
 	# DE #
 	######
 	cat("STARTING DE\n")
-	dds <- suppressMessages(DESeq(ddsHTSeq))
-	res <- results(dds)
+	a_vs_b_title <- paste(a, b, sep="vs")
+
+	# de
+	deseq2_de <- suppressMessages(DESeq(deseq2_HTSeq))
+	deseq2_res <- results(deseq2_de)
+	edger_HTSeq <- estimateTagwiseDisp(estimateCommonDisp(calcNormFactors(edger_HTSeq)))
+	edger_de <- exactTest(edger_HTSeq)
+	edger_de_fdr <- topTags(edger_de, n = "inf")
+	edger_de_fdr$table <- edger_de_fdr$table[!rownames(edger_de_fdr$table) %in% 
+	                                     c("__no_feature", "__ambiguous", "__too_low_aQual", "__not_aligned", "__alignment_not_unique"), ]
+	
+	# deseq2 and edger intersection
+	png(paste(a_vs_b_title, "deseq2_vs_edger_venn.png", sep="_"), width=960, height=960)
+	dev.control('enable')
+	venn::venn(list(deseq2_res@rownames, rownames(edger_de_fdr)), snames=c('deseq2', 'edger'),
+	     zcolor='style')
+	dev.copy(postscript, paste(a_vs_b_title, "deseq2_vs_edger_venn.eps", sep="_"),
+	         width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.off()
+	dev.off()
+	
+	# filter deseq2 genes to only be the intersection
+	intersection_genes <- intersect(deseq2_res@rownames, rownames(edger_de_fdr))
+	deseq2_de <- deseq2_de[intersection_genes]
+	deseq2_res <- results(deseq2_de)
 
 	# shrinkage of effect size
-	resShrink <- suppressMessages(lfcShrink(dds, coef=resultsNames(dds)[2], type="apeglm"))
+	resShrink <- suppressMessages(lfcShrink(deseq2_de, coef=resultsNames(deseq2_de)[2], type="apeglm"))
 
-	# output files
+	################
+	# Output Files #
+	################
 	cat("Outputing files:\n")
-	a_vs_b_title <- paste(a, b, sep="vs")
 
 	# heatmap 1
 	cat("Heatmaps...\n")
-	ntd <- normTransform(dds)
-	select <- order(rowMeans(counts(dds, normalized=TRUE)), decreasing=TRUE)[1:20]
-	df <- as.data.frame(colData(dds)[, c("condition", "sizeFactor")])
+	ntd <- normTransform(deseq2_de)
+	select <- order(rowMeans(counts(deseq2_de, normalized=TRUE)), decreasing=TRUE)[1:20]
+	df <- as.data.frame(colData(deseq2_de)[, c("condition", "sizeFactor")])
 	png(paste(a_vs_b_title, "heatmap.png", sep="_"), width=960, height=960)
 	dev.control('enable')
 	pheatmap(assay(ntd)[select, ], cluster_rows=FALSE, show_rownames=FALSE,
@@ -126,7 +155,7 @@ DESeq2_compare_ab <- function(a, b){
 
 	# heatmap of the sample-to-sample distances
 	cat("Heatmap of the sample-to-sample distances...\n")
-	vsd <- vst(dds, blind=FALSE)
+	vsd <- vst(deseq2_de, blind=FALSE)
 	sampleDists <- dist(t(assay(vsd)))
 	sampleDistMatrix <- as.matrix(sampleDists)
 	rownames(sampleDistMatrix) <- paste(vsd$condition, vsd$sizeFactor, sep="-")
@@ -146,7 +175,7 @@ DESeq2_compare_ab <- function(a, b){
 	png(paste(a_vs_b_title, "cooks_boxplot.png", sep="_"), width=960, height=960)
 	dev.control('enable')
 	par(mar=c(8,5,2,2))
-	boxplot(log10(assays(dds)[["cooks"]]), range=0, las=2)
+	boxplot(log10(assays(deseq2_de)[["cooks"]]), range=0, las=2)
 	dev.copy(postscript, paste(a_vs_b_title, "cooks_boxplot.eps", sep="_"), width=960,
 		height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
@@ -157,7 +186,7 @@ DESeq2_compare_ab <- function(a, b){
 	png(paste(a_vs_b_title, "log2_fold_changes.png", sep="_"),
 		width=960, height=960)
 	dev.control('enable')
-	plotMA(res, main=a_vs_b_title, ylim=c(-10,10))
+	plotMA(deseq2_res, main=a_vs_b_title, ylim=c(-10,10))
 	dev.copy(postscript, paste(a_vs_b_title, "log2_fold_changes.eps", sep="_"), width=960,
 		height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
@@ -168,8 +197,8 @@ DESeq2_compare_ab <- function(a, b){
 	png(paste(a_vs_b_title, "log2_fold_changes_boxplot.png", sep="_"),
 	    width=960, height=960)
 	dev.control('enable')
-	boxplot_fig <- res[["log2FoldChange"]]
-	boxplot(res[["log2FoldChange"]], names=a_vs_b_title)
+	boxplot_fig <- deseq2_res[["log2FoldChange"]]
+	boxplot(deseq2_res[["log2FoldChange"]], names=a_vs_b_title)
 	dev.copy(postscript, paste(a_vs_b_title, "log2_fold_changes_boxplot.eps", sep="_"),
 		width=960, height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
@@ -191,18 +220,18 @@ DESeq2_compare_ab <- function(a, b){
 	# htmlreport <- HTMLReport(shortName=paste(a_vs_b_title, 'html_report', sep="_"),
 	# 	title=paste(a_vs_b_title, 'DESeq2 html report', sep=" "),
 	# 	reportDirectory=paste("./", a_vs_b_title, "_html_report", sep=""))
-	# publish(dds, htmlreport, pvalueCutoff=0.05, annotation.db="org.Mm.eg.db",
+	# publish(deseq2_de, htmlreport, pvalueCutoff=0.05, annotation.db="org.Mm.eg.db",
 	# 	factor=sampleCondition, reportDir=paste("./", a_vs_b_title,
 	# 	"_html_report", sep=""))
 	# finish(htmlreport)
 
 	# data
 	cat("Data files...\n")
-	write(mcols(res)$description, file=paste(a_vs_b_title,
+	write(mcols(deseq2_res)$description, file=paste(a_vs_b_title,
 		"log2_fold_changes_variables_and_tests.txt", sep="_"))
 	write(mcols(resShrink)$description, file=paste(a_vs_b_title,
 		"shrunken_log2_fold_changes_variables_and_tests.txt", sep="_"))
-	write.csv(as.data.frame(res), file=paste(a_vs_b_title, "results.csv", sep="_"))
+	write.csv(as.data.frame(deseq2_res), file=paste(a_vs_b_title, "results.csv", sep="_"))
 
 	# Finished
 	cat("Finished DE of", a, "vs", b, "\n")
@@ -227,7 +256,7 @@ for (comparison in args) {
     }
     
     # run DESeq2
-    multi_figs <- DESeq2_compare_ab(a, b)
+    multi_figs <- compare_ab(a, b)
     
     # build multi figures vetors
     foldchange_boxplots = c(foldchange_boxplots, list(as.numeric(head(multi_figs, n=-1))))
