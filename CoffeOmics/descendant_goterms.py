@@ -126,8 +126,10 @@ if __name__ == '__main__':
 
 		# write output file
 		print('Writing output file ... ', end='')
-		header = ['GO term', 'GO term description', 'Gene ID (descendant)', 'Gene Description', 'Foldchange 1vs3','Foldchange 5vs7', 'Foldchange 1vs5', 'Foldchange 3vs7']
-
+		
+		comparisons = de_results_dict.keys()
+		header = ['GO term', 'GO term description', 'Gene ID (descendant)', 'Gene Description'] + [comparison_name + ' Foldchange' for comparison_name in comparisons]
+		
 		with open(os.path.join(parser.output_folder, 'table5.csv'), 'w', newline= '') as csv_file:
 			csv_writer = csv.writer(csv_file)
 			csv_writer.writerow(header)  # write header
@@ -135,9 +137,8 @@ if __name__ == '__main__':
 			for go_term_and_description in verified_descendants:
 				for descend_id, descend_descrip in verified_descendants[go_term_and_description]:
 
-					csv_writer.writerow([*(go_term_and_description), descend_id, descend_descrip,
-					de_results_dict['1vs3'].get(descend_id, ''), de_results_dict['5vs7'].get(descend_id, ''),
-					de_results_dict['1vs5'].get(descend_id, ''), de_results_dict['3vs7'].get(descend_id, '')])
+					csv_writer.writerow([*(go_term_and_description), descend_id, descend_descrip] +
+					[de_results_dict[comparison_name].get(descend_id, '') for comparison_name in comparisons])
 		print('OK')
 
 	else:
