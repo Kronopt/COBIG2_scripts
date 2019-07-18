@@ -136,7 +136,7 @@ compare_ab <- function(a, b){
 	png(paste(a_vs_b_title, "heatmap2_20.png", sep="_"), width=960, height=960)
 	dev.control('enable')
 	heatmap.2(assay(ntd)[select, ], trace='none', margins=c(3, 8), dendrogram='column',
-		labCol=substr(colnames(assay(ntd)[select, ]), start=9, stop=10),
+		labCol=substr(colnames(assay(ntd)[select, ]), start=9, stop=10), col=rev(heat.colors(100)),
 		key.title='Color Key', key.xlab='Gene Counts', key.ylab='# Genes w/ count')
 	dev.copy(postscript, paste(a_vs_b_title, "heatmap2_20.eps", sep="_"), width=960,
 		height=960, onefile=TRUE, horizontal=FALSE)
@@ -146,7 +146,7 @@ compare_ab <- function(a, b){
 	png(paste(a_vs_b_title, "heatmap2_all.png", sep="_"), width=960, height=960)
 	dev.control('enable')
 	heatmap.2(assay(ntd), trace='none', margins=c(3, 1), dendrogram='column',
-		labCol=substr(colnames(assay(ntd)), start=9, stop=10), labRow='',
+		labCol=substr(colnames(assay(ntd)), start=9, stop=10), labRow='', col=rev(heat.colors(100)),
 		key.title='Color Key', key.xlab='Gene Counts', key.ylab='# Genes w/ count')
 	dev.copy(postscript, paste(a_vs_b_title, "heatmap2_all.eps", sep="_"), width=960,
 		height=960, onefile=TRUE, horizontal=FALSE)
