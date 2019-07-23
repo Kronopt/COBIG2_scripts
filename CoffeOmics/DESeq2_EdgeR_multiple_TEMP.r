@@ -95,12 +95,22 @@ compare_ab <- function(a, b){
 	edger_de_fdr$table <- edger_de_fdr$table[!rownames(edger_de_fdr$table) %in% 
 	                                     c("__no_feature", "__ambiguous", "__too_low_aQual", "__not_aligned", "__alignment_not_unique"), ]
 	
-	# deseq2 and edger intersection
+	# deseq2 and edger intersection (ALL)
 	png(paste(a_vs_b_title, "deseq2_vs_edger_venn.png", sep="_"), width=960, height=960)
 	dev.control('enable')
 	venn::venn(list(deseq2_res@rownames, rownames(edger_de_fdr)), snames=c('deseq2', 'edger'),
 	     zcolor='style')
 	dev.copy(postscript, paste(a_vs_b_title, "deseq2_vs_edger_venn.eps", sep="_"),
+	         width=960, height=960, onefile=TRUE, horizontal=FALSE)
+	dev.off()
+	dev.off()
+	
+	# deseq2 and edger intersection (SIGNIFICANT)
+	png(paste(a_vs_b_title, "deseq2_vs_edger_significant_venn.png", sep="_"), width=960, height=960)
+	dev.control('enable')
+	venn::venn(list(deseq2_res@rownames[deseq2_res$padj<0.1], rownames(topTags(edger_de, n = "inf", p.value = 0.1))), snames=c('deseq2', 'edger'),
+	           zcolor='style')
+	dev.copy(postscript, paste(a_vs_b_title, "deseq2_vs_edger_significant_venn.eps", sep="_"),
 	         width=960, height=960, onefile=TRUE, horizontal=FALSE)
 	dev.off()
 	dev.off()
